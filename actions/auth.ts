@@ -13,23 +13,28 @@ export async function registerUser(formData: FormData) {
         throw new Error('Missing fields')
     }
 
-    const existingUser = await prisma.user.findUnique({
-        where: { email },
-    })
+    try {
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
+        })
 
-    if (existingUser) {
-        return { error: 'User already exists' }
+        if (existingUser) {
+            return { error: 'User already exists' }
+        }
+
+        const hashedPassword = await hash(password, 10)
+
+        await prisma.user.create({
+            data: {
+                email,
+                password: hashedPassword,
+                name,
+            },
+        })
+    } catch (error) {
+        console.error('Registration Error:', error)
+        return { error: 'Registration failed. Please try again.' }
     }
-
-    const hashedPassword = await hash(password, 10)
-
-    await prisma.user.create({
-        data: {
-            email,
-            password: hashedPassword,
-            name,
-        },
-    })
 
     redirect('/login?registered=true')
 }

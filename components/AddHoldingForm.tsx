@@ -5,17 +5,45 @@ import { useState } from 'react'
 
 export default function AddHoldingForm({ onSuccess }: { onSuccess: () => void }) {
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     async function clientAction(formData: FormData) {
         setLoading(true)
-        await addHolding(formData)
-        setLoading(false)
-        onSuccess()
+        setError(null)
+        try {
+            const result = await addHolding(formData)
+            if (result && !result.success) {
+                setError(result.error || 'Something went wrong')
+                setLoading(false)
+                return
+            }
+            // Success
+            onSuccess()
+        } catch (e) {
+            setError('An unexpected error occurred.')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Add New Holding</h3>
+            {error && (
+                <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            {/* Heroicon name: solid/exclamation */}
+                            <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm text-red-700">{error}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
             <form action={clientAction}>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>

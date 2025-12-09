@@ -8,9 +8,13 @@ export default function SignupPage() {
     const [error, setError] = useState('')
 
     async function clientAction(formData: FormData) {
-        const res = await registerUser(formData)
-        if (res?.error) {
-            setError(res.error)
+        try {
+            const res = await registerUser(formData)
+            if (res?.error) {
+                setError(res.error)
+            }
+        } catch (e) {
+            setError('Something went wrong. Please try again.')
         }
     }
 

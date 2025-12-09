@@ -16,32 +16,52 @@ export async function getHoldings() {
 }
 
 export async function addHolding(formData: FormData) {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) throw new Error('Unauthorized')
+    try {
+        console.log("Starting addHolding action");
+        const session = await getServerSession(authOptions)
+        if (!session?.user?.email) {
+            console.error("No session or email found");
+            return { success: false, error: 'Unauthorized' };
+        }
 
-    const symbol = formData.get('symbol') as string
-    const quantity = parseInt(formData.get('quantity') as string)
-    const averageBuyPrice = parseFloat(formData.get('averageBuyPrice') as string)
-    const buyDate = formData.get('buyDate') ? new Date(formData.get('buyDate') as string) : null
+        const symbol = formData.get('symbol') as string
+        const quantity = parseInt(formData.get('quantity') as string)
+        const averageBuyPrice = parseFloat(formData.get('averageBuyPrice') as string)
+        const buyDate = formData.get('buyDate') ? new Date(formData.get('buyDate') as string) : null
 
-    // In a real app, fetch company name from API
-    const companyName = symbol // Placeholder
+        if (!symbol || !quantity || !averageBuyPrice) {
+            console.error("Missing required fields", { symbol, quantity, averageBuyPrice });
+            return { success: false, error: 'Missing required fields' };
+        }
 
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } })
-    if (!user) throw new Error('User not found')
+        // In a real app, fetch company name from API
+        const companyName = symbol // Placeholder
 
-    await prisma.holding.create({
-        data: {
-            userId: user.id,
-            symbol: symbol.toUpperCase(),
-            companyName,
-            quantity,
-            averageBuyPrice,
-            buyDate,
-        },
-    })
+        const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+        if (!user) {
+            console.error("User not found despite session", session.user.email);
+            return { success: false, error: 'User not found' };
+        }
 
-    revalidatePath('/dashboard')
+        console.log("Creating holding for user", user.id);
+        const newHolding = await prisma.holding.create({
+            data: {
+                userId: user.id,
+                symbol: symbol.toUpperCase(),
+                companyName,
+                quantity,
+                averageBuyPrice,
+                buyDate,
+            },
+        })
+        console.log("Holding created successfully", newHolding.id);
+
+        revalidatePath('/dashboard')
+        return { success: true };
+    } catch (error) {
+        console.error("Error in addHolding:", error);
+        return { success: false, error: 'Failed to add holding. Please try again.' };
+    }
 }
 
 export async function deleteHolding(id: string) {
