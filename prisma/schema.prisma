@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String            @id @default(cuid())
+  email             String            @unique
+  password          String
+  name              String?
+  riskProfile       RiskProfile       @default(MODERATE)
+  investmentHorizon InvestmentHorizon @default(MEDIUM_TERM)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  holdings          Holding[]
+}
+
+model Holding {
+  id              String   @id @default(cuid())
+  userId          String
+  symbol          String
+  companyName     String
+  quantity        Int
+  averageBuyPrice Float
+  buyDate         DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum RiskProfile {
+  CONSERVATIVE
+  MODERATE
+  AGGRESSIVE
+}
+
+enum InvestmentHorizon {
+  SHORT_TERM
+  MEDIUM_TERM
+  LONG_TERM
+}
