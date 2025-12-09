@@ -33,30 +33,30 @@ export default function PortfolioSummary({ holdings, prices, isLoading }: Portfo
 
     return (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-gray-900 border border-gray-800 overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Value</dt>
-                    <dd className="mt-1 text-3xl font-semibold text-gray-900">₹{summary.currentValue.toLocaleString()}</dd>
+                    <dt className="text-sm font-medium text-gray-400 truncate">Total Value</dt>
+                    <dd className="mt-1 text-3xl font-semibold text-white">₹{summary.currentValue.toLocaleString()}</dd>
                 </div>
             </div>
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-gray-900 border border-gray-800 overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
-                    <dt className="text-sm font-medium text-gray-500 truncate">Invested Amount</dt>
-                    <dd className="mt-1 text-3xl font-semibold text-gray-900">₹{summary.totalInvested.toLocaleString()}</dd>
+                    <dt className="text-sm font-medium text-gray-400 truncate">Invested Amount</dt>
+                    <dd className="mt-1 text-3xl font-semibold text-white">₹{summary.totalInvested.toLocaleString()}</dd>
                 </div>
             </div>
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-gray-900 border border-gray-800 overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
-                    <dt className="text-sm font-medium text-gray-500 truncate">Overall P&L</dt>
-                    <dd className={`mt-1 text-3xl font-semibold ${summary.pnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <dt className="text-sm font-medium text-gray-400 truncate">Overall P&L</dt>
+                    <dd className={`mt-1 text-3xl font-semibold ${summary.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {summary.pnl >= 0 ? '+' : ''}₹{summary.pnl.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </dd>
                 </div>
             </div>
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-gray-900 border border-gray-800 overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
-                    <dt className="text-sm font-medium text-gray-500 truncate">Return %</dt>
-                    <dd className={`mt-1 text-3xl font-semibold ${summary.pnlPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <dt className="text-sm font-medium text-gray-400 truncate">Return %</dt>
+                    <dd className={`mt-1 text-3xl font-semibold ${summary.pnlPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {summary.pnlPercent > 0 ? '+' : ''}{summary.pnlPercent.toFixed(2)}%
                     </dd>
                 </div>

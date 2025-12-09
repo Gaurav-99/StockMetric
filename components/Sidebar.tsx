@@ -29,8 +29,8 @@ export default function Sidebar() {
                             key={item.name}
                             href={item.href}
                             className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isActive
-                                    ? 'bg-blue-600 text-white'
-                                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                ? 'bg-gray-800 text-green-400 border border-gray-700'
+                                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
                                 }`}
                         >
                             <item.icon className="h-5 w-5" />

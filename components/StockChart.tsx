@@ -26,15 +26,15 @@ export default function StockChart({ symbol }: StockChartProps) {
     const data = generateData()
 
     return (
-        <div className="h-64 w-full bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-medium mb-4">{symbol} Price History (30 Days)</h3>
+        <div className="h-64 w-full bg-gray-900 border border-gray-800 p-4 rounded-lg shadow">
+            <h3 className="text-lg font-medium mb-4 text-white">{symbol} Price History (30 Days)</h3>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                    <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="price" stroke="#2563eb" strokeWidth={2} dot={false} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" />
+                    <XAxis dataKey="date" tick={{ fontSize: 12, fill: '#9ca3af' }} axisLine={{ stroke: '#4b5563' }} />
+                    <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12, fill: '#9ca3af' }} axisLine={{ stroke: '#4b5563' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#f3f4f6' }} />
+                    <Line type="monotone" dataKey="price" stroke="#22c55e" strokeWidth={2} dot={false} />
                 </LineChart>
             </ResponsiveContainer>
         </div>

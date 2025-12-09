@@ -36,16 +36,16 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold mb-6">Your Profile</h1>
+            <h1 className="text-2xl font-bold mb-6 text-white">Your Profile</h1>
 
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="bg-gray-900 border border-gray-800 shadow rounded-lg p-6">
                 <div className="mb-6">
-                    <h2 className="text-lg font-medium text-gray-900">Personal Information</h2>
-                    <p className="text-sm text-gray-500">Update your investment preferences.</p>
+                    <h2 className="text-lg font-medium text-gray-100">Personal Information</h2>
+                    <p className="text-sm text-gray-400">Update your investment preferences.</p>
                 </div>
 
                 {success && (
-                    <div className="mb-4 p-4 bg-green-50 text-green-700 rounded-md">
+                    <div className="mb-4 p-4 bg-green-900/20 text-green-400 border border-green-800 rounded-md">
                         {success}
                     </div>
                 )}
@@ -53,31 +53,31 @@ export default function ProfilePage() {
                 <form action={clientAction} className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Name</label>
+                            <label className="block text-sm font-medium text-gray-300">Name</label>
                             <input
                                 type="text"
                                 disabled
                                 value={session?.user?.name || ''}
-                                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
+                                className="mt-1 block w-full bg-gray-800 border border-gray-700 text-gray-400 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Email</label>
+                            <label className="block text-sm font-medium text-gray-300">Email</label>
                             <input
                                 type="text"
                                 disabled
                                 value={session?.user?.email || ''}
-                                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
+                                className="mt-1 block w-full bg-gray-800 border border-gray-700 text-gray-400 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="riskProfile" className="block text-sm font-medium text-gray-700">Risk Profile</label>
+                            <label htmlFor="riskProfile" className="block text-sm font-medium text-gray-300">Risk Profile</label>
                             <select
                                 id="riskProfile"
                                 name="riskProfile"
                                 defaultValue={riskProfile}
-                                className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 block w-full bg-gray-800 border border-gray-700 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
                             >
                                 <option value="CONSERVATIVE">Conservative (Low Risk)</option>
                                 <option value="MODERATE">Moderate (Balanced)</option>
@@ -87,12 +87,12 @@ export default function ProfilePage() {
                         </div>
 
                         <div>
-                            <label htmlFor="investmentHorizon" className="block text-sm font-medium text-gray-700">Investment Horizon</label>
+                            <label htmlFor="investmentHorizon" className="block text-sm font-medium text-gray-300">Investment Horizon</label>
                             <select
                                 id="investmentHorizon"
                                 name="investmentHorizon"
                                 defaultValue={investmentHorizon}
-                                className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 block w-full bg-gray-800 border border-gray-700 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
                             >
                                 <option value="SHORT_TERM">Short Term (&lt; 1 Yr)</option>
                                 <option value="MEDIUM_TERM">Medium Term (1-3 Yrs)</option>
@@ -104,7 +104,7 @@ export default function ProfilePage() {
                     <div className="flex justify-end">
                         <button
                             type="submit"
-                            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
                         >
                             Save Changes
                         </button>
