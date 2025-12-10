@@ -1,6 +1,6 @@
 'use client'
 
-import { Holding } from '@prisma/client'
+import type { Holding } from '@prisma/client'
 import { StockPrice } from '@/lib/stockService'
 import { Trash2 } from 'lucide-react'
 import { deleteHolding } from '@/actions/portfolio'

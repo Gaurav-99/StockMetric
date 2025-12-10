@@ -3,7 +3,7 @@
 import { addHolding } from '@/actions/portfolio'
 import { useState } from 'react'
 
-import { Holding } from '@prisma/client'
+import type { Holding } from '@prisma/client'
 
 interface AddHoldingFormProps {
     onSuccess: () => void

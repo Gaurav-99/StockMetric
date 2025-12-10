@@ -1,6 +1,6 @@
 'use client'
 
-import { Holding } from '@prisma/client'
+import type { Holding } from '@prisma/client'
 import { useStockPrices } from '@/hooks/useStockPrices'
 import PortfolioSummary from '@/components/PortfolioSummary'
 import HoldingsTable from '@/components/HoldingsTable'
