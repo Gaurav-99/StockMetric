@@ -28,6 +28,7 @@ export default function DashboardClient({ initialHoldings }: { initialHoldings: 
             }
         } else if (status === 'authenticated') {
             setIsGuest(false)
+            // CRITICAL: Update local state when server props change (after revalidatePath)
             setHoldings(initialHoldings)
         }
     }, [status, initialHoldings])
