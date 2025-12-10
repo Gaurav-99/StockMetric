@@ -6,6 +6,7 @@ import { Trash2 } from 'lucide-react'
 import { deleteHolding } from '@/actions/portfolio'
 import { getRecommendation } from '@/lib/recommendations'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 interface HoldingsTableProps {
     holdings: Holding[]
@@ -58,7 +59,11 @@ export default function HoldingsTable({ holdings, prices, onGuestDelete }: Holdi
 
                             return (
                                 <tr key={holding.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{holding.symbol}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                                        <Link href={`/stocks/${holding.symbol}`} className="hover:text-green-400 hover:underline">
+                                            {holding.symbol}
+                                        </Link>
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 text-right">{holding.quantity}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 text-right">₹{holding.averageBuyPrice.toFixed(2)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right font-semibold">
