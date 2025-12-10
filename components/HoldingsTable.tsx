@@ -10,9 +10,10 @@ import { useSession } from 'next-auth/react'
 interface HoldingsTableProps {
     holdings: Holding[]
     prices: StockPrice[]
+    onGuestDelete?: (id: string) => void
 }
 
-export default function HoldingsTable({ holdings, prices }: HoldingsTableProps) {
+export default function HoldingsTable({ holdings, prices, onGuestDelete }: HoldingsTableProps) {
     const { data: session } = useSession()
 
     // Safe defaults if session not fully loaded
@@ -75,7 +76,7 @@ export default function HoldingsTable({ holdings, prices }: HoldingsTableProps) 
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button onClick={() => deleteHolding(holding.id)} className="text-red-400 hover:text-red-300">
+                                        <button onClick={() => onGuestDelete ? onGuestDelete(holding.id) : deleteHolding(holding.id)} className="text-red-400 hover:text-red-300">
                                             <Trash2 className="h-4 w-4" />
                                         </button>
                                     </td>

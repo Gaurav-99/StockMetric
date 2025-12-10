@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { PieChart, TrendingUp, Newspaper, User, Settings, LogOut } from 'lucide-react'
-import { signOut } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 
 const navigation = [
     { name: 'Portfolio', href: '/dashboard', icon: PieChart },
@@ -15,6 +15,7 @@ const navigation = [
 
 export default function Sidebar() {
     const pathname = usePathname()
+    const { data: session } = useSession()
 
     return (
         <div className="flex h-full w-64 flex-col bg-gray-900 text-white">
@@ -40,13 +41,23 @@ export default function Sidebar() {
                 })}
             </nav>
             <div className="border-t border-gray-800 p-4">
-                <button
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
-                >
-                    <LogOut className="h-5 w-5" />
-                    Sign Out
-                </button>
+                {session ? (
+                    <button
+                        onClick={() => signOut({ callbackUrl: '/' })}
+                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                    >
+                        <LogOut className="h-5 w-5" />
+                        Sign Out
+                    </button>
+                ) : (
+                    <Link
+                        href="/login"
+                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-green-400 hover:bg-gray-800 hover:text-green-300 transition-colors"
+                    >
+                        <LogOut className="h-5 w-5" />
+                        Sign In
+                    </Link>
+                )}
             </div>
         </div>
     )

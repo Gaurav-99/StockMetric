@@ -50,18 +50,12 @@ export default function Home() {
           Real-time updates, news integration, and smart suggestions specifically tailored for the modern Indian investor.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/signup"
-            className="px-8 py-4 rounded-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg transition-all shadow-lg shadow-green-900/20 hover:scale-105"
-          >
-            Get Started Free
+        <div className="mt-10 flex items-center justify-center gap-x-6">
+          <Link href="/dashboard" className="rounded-md bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 transition-colors">
+            Get Started (No Login Required)
           </Link>
-          <Link
-            href="/login"
-            className="px-8 py-4 rounded-full bg-gray-800 hover:bg-gray-700 text-white font-medium text-lg transition-all border border-gray-700"
-          >
-            View Demo
+          <Link href="/login" className="text-sm font-semibold leading-6 text-white hover:text-green-400 transition-colors">
+            Log in <span aria-hidden="true">→</span>
           </Link>
         </div>
 

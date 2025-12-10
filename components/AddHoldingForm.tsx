@@ -3,13 +3,49 @@
 import { addHolding } from '@/actions/portfolio'
 import { useState } from 'react'
 
-export default function AddHoldingForm({ onSuccess }: { onSuccess: () => void }) {
+import { Holding } from '@prisma/client'
+
+interface AddHoldingFormProps {
+    onSuccess: () => void
+    isGuest?: boolean
+    onGuestAdd?: (holding: Holding) => void
+}
+
+export default function AddHoldingForm({ onSuccess, isGuest = false, onGuestAdd }: AddHoldingFormProps) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    async function clientAction(formData: FormData) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault()
         setLoading(true)
         setError(null)
+
+        const formData = new FormData(event.currentTarget)
+        const symbol = formData.get('symbol') as string
+        const quantity = parseInt(formData.get('quantity') as string)
+        const averageBuyPrice = parseFloat(formData.get('averageBuyPrice') as string)
+
+        if (isGuest) {
+            if (onGuestAdd) {
+                const newHolding: Holding = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    userId: 'guest',
+                    symbol: symbol.toUpperCase(),
+                    companyName: symbol.toUpperCase(), // Placeholder
+                    quantity,
+                    averageBuyPrice,
+                    buyDate: new Date(),
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }
+                onGuestAdd(newHolding)
+                setLoading(false)
+                onSuccess()
+            }
+            return
+        }
+
+        // Server Action for Authenticated Users
         try {
             const result = await addHolding(formData)
             if (result && !result.success) {
@@ -28,7 +64,14 @@ export default function AddHoldingForm({ onSuccess }: { onSuccess: () => void })
 
     return (
         <div className="bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border border-gray-800 rounded-lg">
-            <h3 className="text-lg font-medium leading-6 text-white mb-4">Add New Holding</h3>
+            <h3 className="text-lg font-medium leading-6 text-white mb-4">
+                {isGuest ? 'Add Stock (Guest Mode)' : 'Add New Holding'}
+            </h3>
+            {isGuest && (
+                <p className="text-sm text-gray-400 mb-4">
+                    Data will be saved to your browser. <a href="/signup" className="text-green-400 underline">Sign up</a> to save to the cloud.
+                </p>
+            )}
             {error && (
                 <div className="mb-4 bg-red-900/20 border-l-4 border-red-500 p-4">
                     <div className="flex">
@@ -44,7 +87,7 @@ export default function AddHoldingForm({ onSuccess }: { onSuccess: () => void })
                     </div>
                 </div>
             )}
-            <form action={clientAction}>
+            <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label htmlFor="symbol" className="block text-sm font-medium text-gray-300">Stock Symbol (NSE)</label>
