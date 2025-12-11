@@ -1,4 +1,4 @@
-// Mock Stock Data Service
+import yahooFinance from 'yahoo-finance2'
 
 export interface StockPrice {
     symbol: string
@@ -8,40 +8,57 @@ export interface StockPrice {
     lastUpdated: string
 }
 
-const MOCK_PRICES: Record<string, number> = {
-    RELIANCE: 2450.0,
-    TCS: 3600.0,
-    HDFCBANK: 1650.0,
-    INFY: 1500.0,
-    ICICIBANK: 950.0,
-}
-
-// Simulate market movement
-function randomizePrice(basePrice: number) {
-    const variation = basePrice * 0.005 // 0.5% fluctuation
-    return basePrice + (Math.random() * variation * 2 - variation)
-}
-
 export async function getStockPrice(symbol: string): Promise<StockPrice> {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    try {
+        // Ensure symbol has .NS suffix for Indian stocks if not present
+        // This is a simple heuristic; might need refinement if US stocks are supported later
+        const lookupSymbol = symbol.endsWith('.NS') ? symbol : `${symbol}.NS`
 
-    const base = MOCK_PRICES[symbol] || 100.0
-    const current = randomizePrice(base)
-    const prevClose = base // Simplified
-    const change = current - prevClose
-    const changePercent = (change / prevClose) * 100
+        const quote = await yahooFinance.quote(lookupSymbol)
 
-    return {
-        symbol,
-        currentPrice: parseFloat(current.toFixed(2)),
-        change: parseFloat(change.toFixed(2)),
-        changePercent: parseFloat(changePercent.toFixed(2)),
-        lastUpdated: new Date().toISOString(),
+        if (!quote) {
+            throw new Error(`No data found for symbol: ${symbol}`)
+        }
+
+        return {
+            symbol: symbol.toUpperCase().replace('.NS', ''), // Return clean symbol
+            currentPrice: quote.regularMarketPrice || 0,
+            change: quote.regularMarketChange || 0,
+            changePercent: quote.regularMarketChangePercent || 0,
+            lastUpdated: new Date().toISOString(),
+        }
+    } catch (error) {
+        console.error(`Error fetching price for ${symbol}:`, error)
+        // Return a safe fallback to prevent page crash, or rethrow if strict
+        return {
+            symbol: symbol.toUpperCase(),
+            currentPrice: 0,
+            change: 0,
+            changePercent: 0,
+            lastUpdated: new Date().toISOString(),
+        }
     }
 }
 
 export async function getStockPrices(symbols: string[]): Promise<StockPrice[]> {
+    // yahoo-finance2 does not support batch requests well for free tier without issues sometimes, 
+    // so parallel requests are safer for small numbers.
     const promises = symbols.map((s) => getStockPrice(s))
     return Promise.all(promises)
+}
+
+export async function getStockHistory(symbol: string) {
+    try {
+        const lookupSymbol = symbol.endsWith('.NS') ? symbol : `${symbol}.NS`
+        const queryOptions = { period1: '1mo', interval: '1d' as const } // 1 month history, daily interval
+        const result = await yahooFinance.historical(lookupSymbol, queryOptions)
+
+        return result.map((quote: any) => ({
+            date: new Date(quote.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            price: quote.close
+        }))
+    } catch (error) {
+        console.error(`Error fetching history for ${symbol}:`, error)
+        return []
+    }
 }

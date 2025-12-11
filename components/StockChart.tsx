@@ -2,28 +2,24 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
+export interface ChartData {
+    date: string
+    price: number
+}
+
 interface StockChartProps {
     symbol: string
+    data: ChartData[]
 }
 
-// Generate mock historical data
-const generateData = () => {
-    const data = []
-    let price = 2400
-    for (let i = 30; i >= 0; i--) {
-        const date = new Date()
-        date.setDate(date.getDate() - i)
-        price = price * (1 + (Math.random() * 0.04 - 0.02))
-        data.push({
-            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            price: parseFloat(price.toFixed(2)),
-        })
+export default function StockChart({ symbol, data }: StockChartProps) {
+    if (!data || data.length === 0) {
+        return (
+            <div className="h-64 w-full bg-gray-900 border border-gray-800 p-4 rounded-lg shadow flex items-center justify-center text-gray-400">
+                No chart data available
+            </div>
+        )
     }
-    return data
-}
-
-export default function StockChart({ symbol }: StockChartProps) {
-    const data = generateData()
 
     return (
         <div className="h-64 w-full bg-gray-900 border border-gray-800 p-4 rounded-lg shadow">

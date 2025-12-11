@@ -1,4 +1,4 @@
-import { getStockPrice } from '@/lib/stockService'
+import { getStockPrice, getStockHistory } from '@/lib/stockService'
 import { getStockNews } from '@/lib/newsService'
 import StockChart from '@/components/StockChart'
 import { ArrowUp, ArrowDown, Lightbulb } from 'lucide-react'
@@ -12,6 +12,7 @@ export default async function StockDetailPage({ params }: { params: { symbol: st
     try {
         const symbol = params.symbol.toUpperCase()
         const price = await getStockPrice(symbol)
+        const history = await getStockHistory(symbol)
         const news = await getStockNews(symbol)
         const session = await getServerSession(authOptions)
 
@@ -39,7 +40,7 @@ export default async function StockDetailPage({ params }: { params: { symbol: st
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
-                        <StockChart symbol={symbol} />
+                        <StockChart symbol={symbol} data={history} />
 
                         <div className={`p-4 rounded-lg border-l-4 ${recommendation.action === 'BUY' ? 'bg-green-900/20 border-green-500' :
                             recommendation.action === 'SELL' ? 'bg-red-900/20 border-red-500' :
