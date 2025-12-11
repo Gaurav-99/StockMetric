@@ -8,9 +8,10 @@ import { authOptions } from '@/lib/authOptions'
 import { getRecommendation } from '@/lib/recommendations'
 import { RiskProfile, InvestmentHorizon } from '@prisma/client'
 
-export default async function StockDetailPage({ params }: { params: { symbol: string } }) {
+export default async function StockDetailPage({ params }: { params: Promise<{ symbol: string }> }) {
     try {
-        const symbol = params.symbol.toUpperCase()
+        const { symbol: rawSymbol } = await params
+        const symbol = rawSymbol.toUpperCase()
         const price = await getStockPrice(symbol)
         const history = await getStockHistory(symbol)
         const news = await getStockNews(symbol)

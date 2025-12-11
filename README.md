@@ -2,6 +2,8 @@
 
 A production-ready web application for tracking Indian stock market (NSE) portfolios with AI-style buy/sell/hold suggestions.
 
+Built using **Google's Antigravity**.
+
 ## Features
 
 - **Portfolio Tracking**: Real-time updates of your holdings using React Query.
@@ -18,47 +20,6 @@ A production-ready web application for tracking Indian stock market (NSE) portfo
 - **State**: TanStack Query
 - **Styling**: Tailwind CSS
 - **Charts**: Recharts
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- PostgreSQL Database
-
-### Installation
-
-1. Clone the repository.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   - Rename `env.example` to `.env`.
-   - Update `DATABASE_URL` with your PostgreSQL connection string.
-   - Update `NEXTAUTH_SECRET` (generate one with `openssl rand -base64 32`).
-
-### Database Setup
-
-1. Run migrations to create the schema:
-   ```bash
-   npx prisma migrate dev
-   ```
-2. Seed the database with a user and sample data:
-   ```bash
-   npx prisma db seed
-   ```
-   **Default Credentials:**
-   - Email: `demo@example.com`
-   - Password: `password123`
-
-### Running the App
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 

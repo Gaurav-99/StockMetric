@@ -1,3 +1,5 @@
+'use server'
+
 import yahooFinance from 'yahoo-finance2'
 
 export interface StockPrice {
@@ -14,7 +16,7 @@ export async function getStockPrice(symbol: string): Promise<StockPrice> {
         // This is a simple heuristic; might need refinement if US stocks are supported later
         const lookupSymbol = symbol.endsWith('.NS') ? symbol : `${symbol}.NS`
 
-        const quote = await yahooFinance.quote(lookupSymbol)
+        const quote = await yahooFinance.quote(lookupSymbol) as any
 
         if (!quote) {
             throw new Error(`No data found for symbol: ${symbol}`)
@@ -51,7 +53,7 @@ export async function getStockHistory(symbol: string) {
     try {
         const lookupSymbol = symbol.endsWith('.NS') ? symbol : `${symbol}.NS`
         const queryOptions = { period1: '1mo', interval: '1d' as const } // 1 month history, daily interval
-        const result = await yahooFinance.historical(lookupSymbol, queryOptions)
+        const result = await yahooFinance.historical(lookupSymbol, queryOptions) as any
 
         return result.map((quote: any) => ({
             date: new Date(quote.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
