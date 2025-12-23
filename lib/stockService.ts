@@ -1,6 +1,7 @@
 'use server'
 
-import yahooFinance from 'yahoo-finance2'
+import YahooFinance from 'yahoo-finance2'
+const yahooFinance = new YahooFinance()
 
 export interface StockPrice {
     symbol: string
@@ -52,7 +53,15 @@ export async function getStockPrices(symbols: string[]): Promise<StockPrice[]> {
 export async function getStockHistory(symbol: string) {
     try {
         const lookupSymbol = symbol.endsWith('.NS') ? symbol : `${symbol}.NS`
-        const queryOptions = { period1: '1mo', interval: '1d' as const } // 1 month history, daily interval
+        const today = new Date()
+        const thirtyDaysAgo = new Date(today)
+        thirtyDaysAgo.setDate(today.getDate() - 30)
+
+        const queryOptions = {
+            period1: thirtyDaysAgo,
+            period2: today,
+            interval: '1d' as const
+        } // 1 month history, daily interval
         const result = await yahooFinance.historical(lookupSymbol, queryOptions) as any
 
         return result.map((quote: any) => ({
