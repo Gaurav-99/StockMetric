@@ -1,4 +1,7 @@
-// Mock News Service
+'use server'
+
+import YahooFinance from 'yahoo-finance2'
+const yahooFinance = new YahooFinance()
 
 export interface NewsArticle {
     title: string
@@ -9,47 +12,47 @@ export interface NewsArticle {
     sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
 }
 
-const MOCK_NEWS = [
-    {
-        title: 'Market hits fresh highs led by banking stocks',
-        source: 'Financial Times',
-        summary: 'Indian indices surged today with Nifty crossing 20k mark.',
-        sentiment: 'POSITIVE' as const,
-    },
-    {
-        title: 'Inflation concerns loom over global markets',
-        source: 'Market Watch',
-        summary: 'Rising oil prices might trigger another round of inflation.',
-        sentiment: 'NEGATIVE' as const,
-    },
-    {
-        title: 'Quarterly results preview: IT sector likely to remain muted',
-        source: 'Tech Daily',
-        summary: 'Analysts expect flat growth for major IT giants.',
-        sentiment: 'NEUTRAL' as const,
-    },
-]
+// Helper to map Yahoo News result to our NewsArticle interface
+function mapYahooNewsToArticle(newsItem: any): NewsArticle {
+    return {
+        title: newsItem.title,
+        source: newsItem.publisher || 'Yahoo Finance',
+        publishedAt: newsItem.providerPublishTime ? new Date(newsItem.providerPublishTime).toISOString() : new Date().toISOString(),
+        summary: 'Click to read full article...', // Yahoo search result doesn't always have a summary/snippet
+        url: newsItem.link,
+        sentiment: 'NEUTRAL', // Yahoo doesn't provide sentiment, defaulting to Neutral
+    }
+}
 
 export async function getStockNews(symbol: string): Promise<NewsArticle[]> {
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
+    try {
+        // Search for the symbol to get related news
+        const result = await yahooFinance.search(symbol, { newsCount: 5 })
 
-    // Return random subset + symbol specific (mocked)
-    const articles = [
-        {
-            title: `${symbol} announces new strategic partnership`,
-            source: 'Business Standard',
-            publishedAt: new Date().toISOString(),
-            summary: `${symbol} shares rose after the announcement.`,
-            url: '#',
-            sentiment: 'POSITIVE' as const,
-        },
-        ...MOCK_NEWS.map(n => ({ ...n, publishedAt: new Date().toISOString(), url: '#' }))
-    ]
+        if (result.news && result.news.length > 0) {
+            return result.news.map(mapYahooNewsToArticle)
+        }
 
-    return articles
+        return []
+    } catch (error) {
+        console.error(`Error fetching news for ${symbol}:`, error)
+        return []
+    }
 }
 
 export async function getGlobalNews(): Promise<NewsArticle[]> {
-    return MOCK_NEWS.map(n => ({ ...n, publishedAt: new Date().toISOString(), url: '#' }))
+    try {
+        // Search for general Indian market news
+        // "Nifty 50" or "Sensex" or "Indian Stock Market" are good queries
+        const result = await yahooFinance.search('Indian Stock Market', { newsCount: 10 })
+
+        if (result.news && result.news.length > 0) {
+            return result.news.map(mapYahooNewsToArticle)
+        }
+
+        return []
+    } catch (error) {
+        console.error('Error fetching global news:', error)
+        return []
+    }
 }
