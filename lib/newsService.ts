@@ -42,15 +42,41 @@ export async function getStockNews(symbol: string): Promise<NewsArticle[]> {
 
 export async function getGlobalNews(): Promise<NewsArticle[]> {
     try {
-        // Search for general Indian market news
-        // "Nifty 50" or "Sensex" or "Indian Stock Market" are good queries
-        const result = await yahooFinance.search('Indian Stock Market', { newsCount: 10 })
+        const queries = [
+            'Indian Stock Market',
+            'Nifty 50',
+            'Sensex',
+            'Bank Nifty',
+            'Indian Economy',
+            'RBI India'
+        ]
 
-        if (result.news && result.news.length > 0) {
-            return result.news.map(mapYahooNewsToArticle)
+        // Run searches in parallel
+        const results = await Promise.all(
+            queries.map(q => yahooFinance.search(q, { newsCount: 10 }))
+        )
+
+        // Aggregated news
+        let allNews: any[] = []
+        results.forEach(res => {
+            if (res.news) {
+                allNews = [...allNews, ...res.news]
+            }
+        })
+
+        // Deduplicate by title to avoid repeats
+        const seen = new Set()
+        const uniqueNews: NewsArticle[] = []
+
+        for (const item of allNews) {
+            if (!seen.has(item.title)) {
+                seen.add(item.title)
+                uniqueNews.push(mapYahooNewsToArticle(item))
+            }
         }
 
-        return []
+        // Sort by date descending
+        return uniqueNews.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
     } catch (error) {
         console.error('Error fetching global news:', error)
         return []
