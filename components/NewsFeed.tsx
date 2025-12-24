@@ -8,6 +8,8 @@ interface NewsFeedProps {
     initialNews: NewsArticle[]
 }
 
+import AutoRefresh from '@/components/AutoRefresh'
+
 export default function NewsFeed({ initialNews }: NewsFeedProps) {
     const ITEMS_PER_PAGE = 10
     const [currentPage, setCurrentPage] = useState(1)
@@ -30,6 +32,7 @@ export default function NewsFeed({ initialNews }: NewsFeedProps) {
 
     return (
         <div className="space-y-6">
+            <AutoRefresh intervalMs={3600000} />
             <div className="bg-gray-900 border border-gray-800 shadow overflow-hidden sm:rounded-md">
                 <ul role="list" className="divide-y divide-gray-800">
                     {currentNews.map((article, idx) => (

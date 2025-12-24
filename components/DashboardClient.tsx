@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import AddHoldingForm from '@/components/AddHoldingForm'
 import { Plus } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import AutoRefresh from '@/components/AutoRefresh'
 
 export default function DashboardClient({ initialHoldings }: { initialHoldings: Holding[] }) {
     const { data: session, status } = useSession()
@@ -45,11 +46,16 @@ export default function DashboardClient({ initialHoldings }: { initialHoldings: 
         localStorage.setItem('guestHoldings', JSON.stringify(updated))
     }
 
+    // AutoRefresh component is used in JSX, import moved to top
+
+    // ... existing imports
+
     const symbols = Array.from(new Set(holdings.map(h => h.symbol)))
     const { data: prices = [], isLoading } = useStockPrices(symbols)
 
     return (
         <div className="space-y-6">
+            <AutoRefresh intervalMs={60000} />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-100">Portfolio Dashboard</h1>

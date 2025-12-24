@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/authOptions'
 import { getRecommendation } from '@/lib/recommendations'
 import { RiskProfile, InvestmentHorizon } from '@prisma/client'
+import AutoRefresh from '@/components/AutoRefresh'
 
 export default async function StockDetailPage({ params }: { params: Promise<{ symbol: string }> }) {
     try {
@@ -26,8 +27,13 @@ export default async function StockDetailPage({ params }: { params: Promise<{ sy
 
         const isPositive = price.change >= 0
 
+        // AutoRefresh component is used in JSX, import moved to top
+
+        // ... existing code
+
         return (
             <div className="max-w-7xl mx-auto space-y-6">
+                <AutoRefresh intervalMs={60000} />
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-white">{symbol}</h1>
                     <div className="text-right">
